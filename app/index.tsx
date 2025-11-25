@@ -36,7 +36,6 @@ export default function SplashScreen() {
 
   const gotoLogin = () => router.replace("/login/Login");
 
-  // Auto-play slides every 3 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       if (step < screens.length - 1) setStep(step + 1);
@@ -57,7 +56,7 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      
+
       {/* Skip Button */}
       <TouchableOpacity style={styles.skipBtn} onPress={gotoLogin}>
         <Text style={styles.skipText}>Skip</Text>
@@ -71,25 +70,22 @@ export default function SplashScreen() {
         style={styles.animation}
       />
 
-      {/* Text */}
+      {/* Text Section */}
       <Text style={styles.title}>{screens[step].title}</Text>
       <Text style={styles.subtitle}>{screens[step].subtitle}</Text>
 
-      {/* Navigation Buttons */}
-      <View style={styles.btnRow}>
-        {step > 0 ? (
+      {/* Bottom Buttons */}
+      <View style={styles.bottomButtons}>
+        {step > 0 && (
           <TouchableOpacity style={styles.prevBtn} onPress={prev}>
             <Text style={styles.navTxt}>Previous</Text>
           </TouchableOpacity>
-        ) : (
-          <View style={{ width: 110 }} />
         )}
 
         <TouchableOpacity style={styles.nextBtn} onPress={next}>
           <Text style={styles.navTxt}>
-          {step === screens.length - 1 ? "Get Started" : "Next"}
+            {step === screens.length - 1 ? "Get Started" : "Next"}
           </Text>
-
         </TouchableOpacity>
       </View>
 
@@ -98,70 +94,70 @@ export default function SplashScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-  flex: 1, 
-  backgroundColor: "#F5F7FF", 
-  alignItems: "center", 
-  justifyContent: "space-between",
-  paddingHorizontal: 25,
-  paddingVertical: 50
-},
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F7FF",
+    alignItems: "center",
+    paddingHorizontal: 25,
+    paddingTop: 60,
+    paddingBottom: 80,
+  },
 
-
-  skipBtn: { 
-    position: "absolute", 
-    top: 50, 
-    right: 20, 
-    backgroundColor: "rgba(0,0,0,0.05)", 
-    paddingVertical: 6, 
-    paddingHorizontal: 12, 
-    borderRadius: 20 
+  skipBtn: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
   },
 
   skipText: { fontSize: 15, color: "#555", fontWeight: "600" },
 
   animation: { width: 300, height: 300 },
 
-  title: { 
-    fontSize: 28, 
-    fontWeight: "800", 
-    marginTop: 20, 
-    color: "#111", 
-    textAlign: "center" 
+  title: {
+    fontSize: 28,
+    fontWeight: "800",
+    marginTop: 20,
+    color: "#111",
+    textAlign: "center",
   },
 
-  subtitle: { 
-    fontSize: 16, 
-    color: "#6a6a6a", 
-    textAlign: "center", 
-    marginTop: 10, 
-    lineHeight: 22 
+  subtitle: {
+    fontSize: 16,
+    color: "#6a6a6a",
+    textAlign: "center",
+    marginTop: 10,
+    lineHeight: 22,
   },
 
-  btnRow: {
+  bottomButtons: {
+    position: "absolute",
+    bottom: 40,
+    width: "100%",
     flexDirection: "row",
-    width: "90%",
     justifyContent: "space-between",
-    marginTop: 40,
+    paddingHorizontal: 25,
+  },
+
+  prevBtn: {
+    backgroundColor: "#444",
+    width: 120,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
     alignItems: "center",
   },
 
-  prevBtn: { 
-    backgroundColor: "#444", 
-    width: 110, 
-    height: 50, 
-    borderRadius: 25, 
-    justifyContent: "center", 
-    alignItems: "center" 
-  },
-
-  nextBtn: { 
-    backgroundColor: "#111", 
-    width: 110, 
-    height: 50, 
-    borderRadius: 25, 
-    justifyContent: "center", 
-    alignItems: "center" 
+  nextBtn: {
+    backgroundColor: "#111",
+    width: 120,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   navTxt: { color: "#fff", fontSize: 16, fontWeight: "700" },
