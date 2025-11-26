@@ -11,6 +11,9 @@ import {
   View,
 } from "react-native";
 import { movies } from "../../assets/data/movies";
+import StarRating from "../movie/movieid/StarRating"; // Adjust the path
+
+
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -26,26 +29,30 @@ export default function Home() {
   );
 
   const renderMovie = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.card,
-        { backgroundColor: darkTheme ? "#1e293b" : "#e2e8f0" },
-      ]}
-      onPress={() => router.push(`/movie/movieid/${item.id}`)}
-    >
-      <Image source={item.image} style={styles.image} />
-      <Text
-        style={[
-          styles.movieName,
-          { color: darkTheme ? "#fff" : "#111" },
-        ]}
-      >
-        {item.name}
-      </Text>
-    </TouchableOpacity>
-  );
+  <TouchableOpacity
+    style={[
+      styles.card,
+      { backgroundColor: darkTheme ? "#1e293b" : "#e2e8f0" },
+    ]}
+    onPress={() => router.push(`/movie/movieid/${item.id}`)}
+  >
+    <Image source={item.image} style={styles.image} />
 
-  return (
+    <Text
+      style={[
+        styles.movieName,
+        { color: darkTheme ? "#fff" : "#111" },
+      ]}
+    >
+      {item.name}
+    </Text>
+
+    {/* ⭐ Rating Component */}
+    <StarRating movieId={item.id} />
+  </TouchableOpacity>
+);
+
+return (
     <View
       style={[
         styles.container,
