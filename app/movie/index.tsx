@@ -1,4 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import {
   Dimensions,
@@ -11,16 +13,23 @@ import {
   View,
 } from "react-native";
 import { movies } from "../../assets/data/movies";
-import StarRating from "../movie/movieid/StarRating"; // Adjust the path
-
-
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function Home() {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [darkTheme, setDarkTheme] = useState(true);
+  const [isDark, setIsDark] = useState(true); // Default to Dark Mode
+
+  // --- Dynamic Theme Colors ---
+  const theme = {
+    bg: isDark ? "#0f172a" : "#ffffff",
+    card: isDark ? "#1e293b" : "#f1f5f9",
+    text: isDark ? "#fff" : "#1e293b",
+    subText: isDark ? "#94a3b8" : "#64748b",
+    inputBg: isDark ? "#1e293b" : "#e2e8f0",
+    icon: isDark ? "#fff" : "#1e293b",
+  };
 
   const filteredMovies = movies.filter(
     (movie) =>
@@ -28,79 +37,52 @@ export default function Home() {
       movie.genre.toLowerCase().includes(search.toLowerCase())
   );
 
-  const renderMovie = ({ item }) => (
-  <TouchableOpacity
-    style={[
-      styles.card,
-      { backgroundColor: darkTheme ? "#1e293b" : "#e2e8f0" },
-    ]}
-    onPress={() => router.push(`/movie/movieid/${item.id}`)}
-  >
-    <Image source={item.image} style={styles.image} />
-
-    <Text
-      style={[
-        styles.movieName,
-        { color: darkTheme ? "#fff" : "#111" },
-      ]}
+  const renderMovie = ({ item }: any) => (
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: theme.card }]}
+      onPress={() => router.push(`/movie/movieid/${item.id}`)}
     >
-      {item.name}
-    </Text>
+      <Image source={item.image} style={styles.image} />
+      <Text style={[styles.movieName, { color: theme.text }]}>{item.name}</Text>
+    </TouchableOpacity>
+  );
 
-    {/* ⭐ Rating Component */}
-    <StarRating movieId={item.id} />
-  </TouchableOpacity>
-);
+  return (
+    <View style={[styles.container, { backgroundColor: theme.bg }]}>
+      {/* Update Status Bar based on theme */}
+      <StatusBar style={isDark ? "light" : "dark"} />
 
-return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: darkTheme ? "#0f172a" : "#ffffff" },
-      ]}
-    >
-      {/* Theme Switch Button */}
-      <TouchableOpacity
-        style={styles.themeSwitch}
-        onPress={() => setDarkTheme(!darkTheme)}
-      >
-        <Text style={{ color: darkTheme ? "#fff" : "#111", fontSize: 18 }}>
-          {darkTheme ? "🌞Light" : "🌙Dark"}
+      {/* Header with Toggle Button */}
+      <View style={styles.headerRow}>
+        <Text style={[styles.header, { color: theme.text }]}>
+          🎬 Movie Suggestions
         </Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setIsDark(!isDark)}
+          style={styles.themeBtn}
+        >
+          <Ionicons
+            name={isDark ? "sunny" : "moon"}
+            size={24}
+            color={theme.icon}
+          />
+        </TouchableOpacity>
+      </View>
 
-      <Text
-        style={[
-          styles.header,
-          { color: darkTheme ? "#fff" : "#111" },
-        ]}
-      >
-        🎬 Movie Suggestions
-      </Text>
-
-      <View
-        style={[
-          styles.searchContainer,
-          { backgroundColor: darkTheme ? "#1e293b" : "#e2e8f0" },
-        ]}
-      >
+      {/* Search Bar */}
+      <View style={[styles.searchContainer, { backgroundColor: theme.inputBg }]}>
         <TextInput
           placeholder="Search by name or genre..."
-          placeholderTextColor={darkTheme ? "#94a3b8" : "#555"}
-          style={[
-            styles.searchInput,
-            { color: darkTheme ? "#fff" : "#111" },
-          ]}
+          placeholderTextColor={theme.subText}
+          style={[styles.searchInput, { color: theme.text }]}
           value={search}
           onChangeText={setSearch}
         />
         <TouchableOpacity
-          style={styles.cbutton}
+          style={[styles.cbutton, { backgroundColor: theme.card }]}
           onPress={() => setSearch("")}
         >
-          <Text style={[styles.cbuttonText, { color: darkTheme ? "#fff" : "#111" }]}>
-            X
-          </Text>
+          <Text style={[styles.cbuttonText, { color: theme.text }]}>X</Text>
         </TouchableOpacity>
       </View>
 
@@ -111,12 +93,7 @@ return (
         numColumns={2}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <Text
-            style={[
-              styles.noResults,
-              { color: darkTheme ? "#94a3b8" : "#555" },
-            ]}
-          >
+          <Text style={[styles.noResults, { color: theme.subText }]}>
             No movies found
           </Text>
         }
@@ -132,16 +109,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 50,
   },
-  themeSwitch: {
-    position: "absolute",
-    top: 50,
-    right: 20,
-    padding: 6,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    zIndex: 100,
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 5,
   },
-  header: { fontSize: 24, fontWeight: "700", marginBottom: 10, textAlign: "center" },
+  header: {
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  themeBtn: {
+    padding: 5,
+  },
   searchContainer: {
     borderRadius: 12,
     paddingHorizontal: 12,
@@ -149,15 +130,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  searchInput: { flex: 1, fontSize: 16, paddingVertical: 10 },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 10,
+  },
   card: {
     flex: 1,
     margin: 8,
     borderRadius: 12,
     overflow: "hidden",
     elevation: 5,
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  image: { width: (screenWidth / 2) - 24, height: 220 },
+  image: {
+    width: (screenWidth / 2) - 24,
+    height: 220,
+    resizeMode: "cover",
+  },
   movieName: {
     fontSize: 16,
     fontWeight: "600",
@@ -169,6 +163,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 40,
   },
-  cbutton: { paddingHorizontal: 10, paddingVertical: 6 },
-  cbuttonText: { fontSize: 16 },
+  cbutton: {
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginLeft: 5,
+  },
+  cbuttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
